@@ -1,5 +1,6 @@
 package com.study.javapersistence;
 
+import com.study.javapersistence.domain.Message;
 import com.study.javapersistence.repositories.MessageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

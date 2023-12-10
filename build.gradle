@@ -11,11 +11,20 @@ java {
 	sourceCompatibility = '11'
 }
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	annotationProcessor 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'
+
 	implementation 'org.hibernate:hibernate-entitymanager'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.data:spring-data-jpa'

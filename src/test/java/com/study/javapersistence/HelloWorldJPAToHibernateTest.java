@@ -1,5 +1,6 @@
 package com.study.javapersistence;
 
+import com.study.javapersistence.domain.Message;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
