@@ -14,7 +14,7 @@ import java.util.List;
 
 public class HelloWorldHibernateTest {
 
-    public static SessionFactory createSessionFactory() {
+    private static SessionFactory createSessionFactory() {
         Configuration configuration = new Configuration();
         configuration.configure().addAnnotatedClass(Message.class);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
