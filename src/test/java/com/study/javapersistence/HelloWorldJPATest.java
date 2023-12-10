@@ -1,6 +1,5 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.ch02.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +28,7 @@ public class HelloWorldJPATest {
 
             em.getTransaction().begin();
             List<Message> messageList = em.createQuery("select m from Message m", Message.class).getResultList();
-            messageList.get(messageList.size()-1).setText("Hello World from JPA!");
+            messageList.get(messageList.size() - 1).setText("Hello World from JPA!");
             em.getTransaction().commit();
 
             Assertions.assertAll(

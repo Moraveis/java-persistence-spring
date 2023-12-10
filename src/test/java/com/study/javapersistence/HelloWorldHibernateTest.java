@@ -1,6 +1,5 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.ch02.Message;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

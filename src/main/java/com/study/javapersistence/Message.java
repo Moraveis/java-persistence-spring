@@ -1,4 +1,4 @@
-package com.study.javapersistence.ch02;
+package com.study.javapersistence;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

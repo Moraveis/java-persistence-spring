@@ -1,6 +1,5 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.ch02.Message;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,6 @@ public class HelloWorldHibernateToJPATest {
         EntityManagerFactory emf = createEntityManagerFactory();
 
         try {
-
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
 
@@ -45,13 +43,9 @@ public class HelloWorldHibernateToJPATest {
             message.setText("Hello World from Hibernate to JPA!");
 
             em.persist(message);
-
             em.getTransaction().commit();
-            //INSERT into MESSAGE (ID, TEXT) values (1, 'Hello World from Hibernate to JPA!')
 
-            List<Message> messages =
-                    em.createQuery("select m from Message m", Message.class).getResultList();
-            //SELECT * from MESSAGE
+            List<Message> messages = em.createQuery("select m from Message m", Message.class).getResultList();
 
             assertAll(
                     () -> assertEquals(1, messages.size()),

@@ -1,6 +1,5 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.ch02.Message;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
@@ -34,18 +33,14 @@ public class HelloWorldJPAToHibernateTest {
             message.setText("Hello World from JPA to Hibernate!");
 
             session.persist(message);
-
             session.getTransaction().commit();
-            // INSERT into MESSAGE (ID, TEXT)
-            // values (1, 'Hello World from JPA to Hibernate!')
+
             session.beginTransaction();
 
             CriteriaQuery<Message> criteriaQuery = session.getCriteriaBuilder().createQuery(Message.class);
             criteriaQuery.from(Message.class);
 
             List<Message> messages = session.createQuery(criteriaQuery).getResultList();
-            // SELECT * from MESSAGE
-
             session.getTransaction().commit();
 
             assertAll(

@@ -1,4 +1,4 @@
-package com.study.javapersistence.ch02.configurations;
+package com.study.javapersistence.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -13,7 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@EnableJpaRepositories("com.study.javapersistence.ch02.repositories")
+@EnableJpaRepositories("com.study.javapersistence.repositories")
 public class SpringDataConfiguration {
 
     @Bean
@@ -48,7 +48,7 @@ public class SpringDataConfiguration {
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());
         localContainerEntityManagerFactoryBean.setJpaProperties(properties);
         localContainerEntityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-        localContainerEntityManagerFactoryBean.setPackagesToScan("com.study.javapersistence.ch02");
+        localContainerEntityManagerFactoryBean.setPackagesToScan("com.study.javapersistence");
 
         return localContainerEntityManagerFactoryBean;
     }
