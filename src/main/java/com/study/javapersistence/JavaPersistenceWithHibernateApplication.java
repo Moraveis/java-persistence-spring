@@ -17,17 +17,4 @@ public class JavaPersistenceWithHibernateApplication {
         SpringApplication.run(JavaPersistenceWithHibernateApplication.class, args);
     }
 
-    @Bean
-    public ApplicationRunner configure(UserRepository userRepository) {
-        return env -> {
-            User userBeth = new User("beth", LocalDate.of(2020, Month.AUGUST, 3));
-            User userMike = new User("mike", LocalDate.of(2020, Month.JANUARY, 18));
-
-            userRepository.save(userBeth);
-            userRepository.save(userMike);
-
-            userRepository.findAll().forEach(System.out::println);
-        };
-    }
-
 }

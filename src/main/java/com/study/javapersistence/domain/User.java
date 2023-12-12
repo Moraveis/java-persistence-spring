@@ -22,6 +22,9 @@ public class User {
 
     private String username;
     private LocalDate registrationDate;
+    private String email;
+    private Integer level;
+    private Boolean active;
 
     public User() {
     }
