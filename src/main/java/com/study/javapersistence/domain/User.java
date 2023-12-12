@@ -1,19 +1,37 @@
 package com.study.javapersistence.domain;
 
-import java.util.StringTokenizer;
+import lombok.Data;
+import lombok.ToString;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "users")
+@Data
+@ToString
 public class User {
 
-    private String firstName;
-    private String lastName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String getName() {
-        return firstName + " " + lastName;
+    private String username;
+    private LocalDate registrationDate;
+
+    public User() {
     }
 
-    public void setFirstName(String name) {
-        StringTokenizer tokenizer = new StringTokenizer(name);
-        this.firstName = tokenizer.nextToken();
-        this.lastName = tokenizer.nextToken();
+    public User(String username) {
+        this.username = username;
+    }
+
+    public User(String username, LocalDate registrationDate) {
+        this.username = username;
+        this.registrationDate = registrationDate;
     }
 }
