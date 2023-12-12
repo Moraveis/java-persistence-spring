@@ -1,31 +1,31 @@
 package com.study.javapersistence.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Data
 public class Item {
 
-    private Set<Bid> bids = new HashSet<>();
+    @Id
+    @GeneratedValue(generator = "ID_GENERATOR")
+    private Long id;
 
-    public Set<Bid> getBids() {
-        return Collections.unmodifiableSet(bids);
-    }
+    @NotNull
+    @Size(min = 2, max = 255, message = "Name is required, maximum 255 characters.")
+    private String name;
 
-    public void addBid(Bid bid) {
-        if (bid == null) {
-            throw new NullPointerException("Can't add null Bid");
-        }
-        if (bid.getItem() != null) {
-            throw new IllegalStateException("Bid is already assigned to an Item");
-        }
-        bids.add(bid);
-        bid.setItem(this);
-    }
+    @Future
+    private Date auctionEnd;
+
 }
