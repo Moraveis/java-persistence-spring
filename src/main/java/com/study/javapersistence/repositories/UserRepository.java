@@ -1,5 +1,6 @@
 package com.study.javapersistence.repositories;
 
+import com.study.javapersistence.domain.Projection;
 import com.study.javapersistence.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,4 +76,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.username, LENGTH(u.email) as email_length from #{#entityName} u where u.username like %?1%")
     List<Object[]> findByAsArrayAndSort(String text, Sort sort);
+
+    List<Projection.UserSummary> findByRegistrationDateAfter(LocalDate date);
+
+    List<Projection.UsernameOnly> findByEmail(String username);
+
+    <T> List<T> findByEmail(String username, Class<T> type);
+
 }
