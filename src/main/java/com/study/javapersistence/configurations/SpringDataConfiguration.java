@@ -43,6 +43,7 @@ public class SpringDataConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         Properties properties = new Properties();
         properties.put("spring.jpa.hibernate.ddl-auto", "create-drop");
+        properties.put("hibernate.physical_naming_strategy", CENamingStrategy.class.getName());
 
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());

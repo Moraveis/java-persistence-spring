@@ -27,7 +27,9 @@ dependencies {
 
 	implementation 'org.hibernate:hibernate-entitymanager'
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.data:spring-data-jpa'
+
 
 	runtimeOnly 'com.h2database:h2'
 

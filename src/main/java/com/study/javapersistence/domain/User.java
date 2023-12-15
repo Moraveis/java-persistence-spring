@@ -1,19 +1,30 @@
 package com.study.javapersistence.domain;
 
-import java.util.StringTokenizer;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "USERS")
 public class User {
 
-    private String firstName;
-    private String lastName;
+    @Id
+    @GeneratedValue(generator = "ID_GENERATOR")
+    private Long id;
 
-    public String getName() {
-        return firstName + " " + lastName;
+    private String username;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setFirstName(String name) {
-        StringTokenizer tokenizer = new StringTokenizer(name);
-        this.firstName = tokenizer.nextToken();
-        this.lastName = tokenizer.nextToken();
+    public String getUsername() {
+        return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }
