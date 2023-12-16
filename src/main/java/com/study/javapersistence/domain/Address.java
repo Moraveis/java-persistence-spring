@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -19,12 +20,8 @@ public class Address {
     private String street;
 
     @NotNull
-    @Column(nullable = false, length = 5)
-    private String zipCode;
-
-    @NotNull
-    @Column(nullable = false)
-    private String city;
+    @AttributeOverride(name = "name", column = @Column(name = "CITY", nullable = false))
+    private City city;
 
 }
 
