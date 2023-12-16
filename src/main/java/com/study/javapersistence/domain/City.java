@@ -12,7 +12,7 @@ public class City {
 
     @NotNull
     @Column(nullable = false, length = 5)
-    private String zipCode;
+    private ZipCode zipCode;
 
     @NotNull
     @Column(nullable = false)

@@ -1,7 +1,10 @@
 package com.study.javapersistence.domain;
 
+import com.study.javapersistence.domain.converter.ZipCodeConverter;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +21,10 @@ public class User {
 
     private String username;
 
+    @Convert(
+            converter = ZipCodeConverter.class,
+            attributeName = "city.zipCode"
+    )
     private Address homeAddress;
 
     @Embedded
@@ -25,6 +32,10 @@ public class User {
     @AttributeOverride(name = "city.zipCode", column = @Column(name = "BILLING_ZIPCODE", length = 5))
     @AttributeOverride(name = "city.name", column = @Column(name = "BILLING_CITY"))
     @AttributeOverride(name = "city.country", column = @Column(name = "BILLING_COUNTRY"))
+    @Convert(
+            converter = ZipCodeConverter.class,
+            attributeName = "city.zipCode"
+    )
     private Address billingAddress;
 
     public Long getId() {

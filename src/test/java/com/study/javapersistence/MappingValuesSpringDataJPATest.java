@@ -3,6 +3,7 @@ package com.study.javapersistence;
 import com.study.javapersistence.domain.Address;
 import com.study.javapersistence.domain.AuctionType;
 import com.study.javapersistence.domain.City;
+import com.study.javapersistence.domain.GermanZipCode;
 import com.study.javapersistence.domain.Item;
 import com.study.javapersistence.domain.MonetaryAmount;
 import com.study.javapersistence.domain.User;
@@ -37,12 +38,13 @@ public class MappingValuesSpringDataJPATest {
 
         City city = new City();
         city.setName("Boston");
-        city.setZipCode("12345");
+        city.setZipCode(new GermanZipCode("12345"));
         city.setCountry("USA");
 
         User user = new User();
         user.setUsername("username");
         user.setHomeAddress(new Address("Flowers Street", city));
+        user.setBillingAddress(new Address("Flowers Street", city));
 
         userRepository.save(user);
 
@@ -61,7 +63,7 @@ public class MappingValuesSpringDataJPATest {
                 () -> assertEquals("username", users.get(0).getUsername()),
                 () -> assertEquals("Flowers Street", users.get(0).getHomeAddress().getStreet()),
                 () -> assertEquals("Boston", users.get(0).getHomeAddress().getCity().getName()),
-                () -> assertEquals("12345", users.get(0).getHomeAddress().getCity().getZipCode()),
+                () -> assertEquals("12345", users.get(0).getHomeAddress().getCity().getZipCode().getValue()),
                 () -> assertEquals("USA", users.get(0).getHomeAddress().getCity().getCountry()),
                 () -> assertEquals(1, items.size()),
                 () -> assertEquals("AUCTION: Some Item", items.get(0).getName()),
