@@ -1,10 +1,13 @@
 package com.study.javapersistence.domain;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 @Embeddable
+@Data
 public class City {
 
     @NotNull

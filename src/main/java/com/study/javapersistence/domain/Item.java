@@ -1,24 +1,29 @@
 package com.study.javapersistence.domain;
 
+import com.study.javapersistence.domain.converter.MonetaryAmountConverter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Transient;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -47,7 +52,7 @@ public class Item {
     @Transient
     private Set<Bid> bids = new HashSet<>();
 
-    @NotNull
+    @Lob
     private String description;
 
     @NotNull
@@ -83,6 +88,17 @@ public class Item {
     @Future
     private Date auctionEnd;
 
+    @Lob
+    private java.sql.Blob image;
+
+    @Type(type = "yes_no")
+    private boolean verified = false;
+
+    @NotNull
+    @Convert(converter = MonetaryAmountConverter.class)
+    @Column(name = "PRICE", length = 63)
+    private MonetaryAmount buyNowPrice;
+
     /*
         Hibernate will call <code>getName()</code> and <code>setName()</code> when loading and storing items.
     */
@@ -99,7 +115,7 @@ public class Item {
     }
 
     public String getDescription() {
-        return description;
+        return description.toString();
     }
 
     public void setDescription(String description) {
@@ -157,5 +173,33 @@ public class Item {
             throw new IllegalStateException("Bid is already assigned to an Item");
         bids.add(bid);
         bid.setItem(this);
+    }
+
+    public void setInitialPrice(BigDecimal initialPrice) {
+        this.initialPrice = initialPrice;
+    }
+
+    public Blob getImage() {
+        return image;
+    }
+
+    public void setImage(Blob image) {
+        this.image = image;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public MonetaryAmount getBuyNowPrice() {
+        return buyNowPrice;
+    }
+
+    public void setBuyNowPrice(MonetaryAmount buyNowPrice) {
+        this.buyNowPrice = buyNowPrice;
     }
 }

@@ -22,8 +22,9 @@ public class User {
 
     @Embedded
     @AttributeOverride(name = "street", column = @Column(name = "BILLING_STREET"))
-    @AttributeOverride(name = "zipCode", column = @Column(name = "BILLING_ZIPCODE", length = 5))
-    @AttributeOverride(name = "city", column = @Column(name = "BILLING_CITY"))
+    @AttributeOverride(name = "city.zipCode", column = @Column(name = "BILLING_ZIPCODE", length = 5))
+    @AttributeOverride(name = "city.name", column = @Column(name = "BILLING_CITY"))
+    @AttributeOverride(name = "city.country", column = @Column(name = "BILLING_COUNTRY"))
     private Address billingAddress;
 
     public Long getId() {
