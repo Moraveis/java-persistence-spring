@@ -1,18 +1,14 @@
 package com.study.javapersistence.domain;
 
-import com.study.javapersistence.domain.converter.MonetaryAmountConverter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -78,12 +74,15 @@ public class Item {
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
-    @Column(insertable = false)
-    @ColumnDefault("1.00")
-    @Generated(
-            org.hibernate.annotations.GenerationTime.INSERT
+    @NotNull
+    @org.hibernate.annotations.Type(
+            type = "monetary_amount_eur"
     )
-    private BigDecimal initialPrice;
+    @org.hibernate.annotations.Columns(columns = {
+            @Column(name = "INITIALPRICE_AMOUNT"),
+            @Column(name = "INITIALPRICE_CURRENCY", length = 3)
+    })
+    private MonetaryAmount initialPrice;
 
     @Future
     private Date auctionEnd;
@@ -95,8 +94,13 @@ public class Item {
     private boolean verified = false;
 
     @NotNull
-    @Convert(converter = MonetaryAmountConverter.class)
-    @Column(name = "PRICE", length = 63)
+    @org.hibernate.annotations.Type(
+            type = "monetary_amount_usd"
+    )
+    @org.hibernate.annotations.Columns(columns = {
+            @Column(name = "BUYNOWPRICE_AMOUNT"),
+            @Column(name = "BUYNOWPRICE_CURRENCY", length = 3)
+    })
     private MonetaryAmount buyNowPrice;
 
     /*
@@ -154,7 +158,7 @@ public class Item {
         return lastModified;
     }
 
-    public BigDecimal getInitialPrice() {
+    public MonetaryAmount getInitialPrice() {
         return initialPrice;
     }
 
@@ -175,7 +179,7 @@ public class Item {
         bid.setItem(this);
     }
 
-    public void setInitialPrice(BigDecimal initialPrice) {
+    public void setInitialPrice(MonetaryAmount initialPrice) {
         this.initialPrice = initialPrice;
     }
 

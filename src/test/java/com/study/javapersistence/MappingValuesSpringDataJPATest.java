@@ -51,6 +51,7 @@ public class MappingValuesSpringDataJPATest {
         Item item = new Item();
         item.setName("Some Item");
         item.setMetricWeight(2);
+        item.setInitialPrice(new MonetaryAmount(new BigDecimal("1.00"), Currency.getInstance("USD")));
         item.setBuyNowPrice(new MonetaryAmount(BigDecimal.valueOf(1.1), Currency.getInstance("USD")));
         item.setDescription("descriptiondescription");
         itemRepository.save(item);
@@ -67,14 +68,14 @@ public class MappingValuesSpringDataJPATest {
                 () -> assertEquals("USA", users.get(0).getHomeAddress().getCity().getCountry()),
                 () -> assertEquals(1, items.size()),
                 () -> assertEquals("AUCTION: Some Item", items.get(0).getName()),
-                () -> assertEquals("1.1 USD", items.get(0).getBuyNowPrice().toString()),
+                () -> assertEquals("2.20 USD", items.get(0).getBuyNowPrice().toString()),
                 () -> assertEquals("descriptiondescription", items.get(0).getDescription()),
                 () -> assertEquals(AuctionType.HIGHEST_BID, items.get(0).getAuctionType()),
                 () -> assertEquals("descriptiond...", items.get(0).getShortDescription()),
                 () -> assertEquals(2.0, items.get(0).getMetricWeight()),
                 () -> assertEquals(LocalDate.now(), items.get(0).getCreatedOn()),
                 () -> assertTrue(ChronoUnit.SECONDS.between(LocalDateTime.now(), items.get(0).getLastModified()) < 1),
-                () -> assertEquals(new BigDecimal("1.00"), items.get(0).getInitialPrice())
+                () -> assertEquals("2.00 EUR", items.get(0).getInitialPrice().toString())
         );
     }
 }
