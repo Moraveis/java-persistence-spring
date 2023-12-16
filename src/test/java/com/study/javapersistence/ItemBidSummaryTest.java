@@ -19,8 +19,7 @@ public class ItemBidSummaryTest {
     @Test
     public void itemBidSummaryTest() {
 
-        EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory("ch05.subselect");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistenceunit");
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -29,6 +28,8 @@ public class ItemBidSummaryTest {
             Item item = new Item();
             item.setName("Some Item");
             item.setAuctionEnd(Helper.tomorrow());
+            item.setMetricWeight(2);
+            item.setDescription("descriptiondescription");
 
             Bid bid1 = new Bid(new BigDecimal(1000.0), item);
             Bid bid2 = new Bid(new BigDecimal(1100.0), item);

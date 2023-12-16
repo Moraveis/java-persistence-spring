@@ -1,14 +1,26 @@
 package com.study.javapersistence.domain;
 
-import com.sun.istack.NotNull;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 import javax.validation.constraints.Future;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,37 +29,117 @@ import java.util.Set;
 @Entity
 public class Item {
 
+    /*
+      The <code>Item</code> entity defaults to field access, the <code>@Id</code> is on a field.
+   */
     @Id
     @GeneratedValue(generator = "ID_GENERATOR")
     private Long id;
 
-    @Version
-    private long version;
-
-    @NotNull
-    @Size(
-            min = 2,
-            max = 255,
-            message = "Name is required, maximum 255 characters."
-    )
+    /*
+       The <code>@Access(AccessType.PROPERTY)</code> setting on the <code>name</code> field switches this
+       particular property to runtime access through getter/setter methods by the JPA provider.
+    */
+    @Access(AccessType.PROPERTY)
+    @Column(name = "ITEM_NAME")
     private String name;
-
-    @Future
-    private Date auctionEnd;
 
     @Transient
     private Set<Bid> bids = new HashSet<>();
 
-    public Long getId() { // Optional but useful
-        return id;
-    }
+    @NotNull
+    private String description;
 
+    @NotNull
+    @Enumerated(EnumType.STRING) // Defaults to ORDINAL
+    private AuctionType auctionType = AuctionType.HIGHEST_BID;
+
+    @Formula("CONCAT(SUBSTR(DESCRIPTION, 1, 12), '...')")
+    private String shortDescription;
+
+    @Formula("(SELECT AVG(B.AMOUNT) FROM BID B WHERE B.ITEM_ID = ID)")
+    private BigDecimal averageBidAmount;
+
+    @Column(name = "IMPERIALWEIGHT")
+    @ColumnTransformer(
+            read = "IMPERIALWEIGHT / 2.20462",
+            write = "? * 2.20462"
+    )
+    private double metricWeight;
+
+    @CreationTimestamp
+    private LocalDate createdOn;
+
+    @UpdateTimestamp
+    private LocalDateTime lastModified;
+
+    @Column(insertable = false)
+    @ColumnDefault("1.00")
+    @Generated(
+            org.hibernate.annotations.GenerationTime.INSERT
+    )
+    private BigDecimal initialPrice;
+
+    @Future
+    private Date auctionEnd;
+
+    /*
+        Hibernate will call <code>getName()</code> and <code>setName()</code> when loading and storing items.
+    */
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = !name.startsWith("AUCTION: ") ? "AUCTION: " + name : name;
+    }
+
+    public Set<Bid> getBids() {
+        return Collections.unmodifiableSet(bids);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public AuctionType getAuctionType() {
+        return auctionType;
+    }
+
+    public void setAuctionType(AuctionType auctionType) {
+        this.auctionType = auctionType;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public BigDecimal getAverageBidAmount() {
+        return averageBidAmount;
+    }
+
+    public double getMetricWeight() {
+        return metricWeight;
+    }
+
+    public void setMetricWeight(double metricWeight) {
+        this.metricWeight = metricWeight;
+    }
+
+    public LocalDate getCreatedOn() {
+        return createdOn;
+    }
+
+    public LocalDateTime getLastModified() {
+        return lastModified;
+    }
+
+    public BigDecimal getInitialPrice() {
+        return initialPrice;
     }
 
     public Date getAuctionEnd() {
@@ -58,11 +150,12 @@ public class Item {
         this.auctionEnd = auctionEnd;
     }
 
-    public Set<Bid> getBids() {
-        return Collections.unmodifiableSet(bids);
-    }
-
     public void addBid(Bid bid) {
+        if (bid == null)
+            throw new NullPointerException("Can't add null Bid");
+        if (bid.getItem() != null)
+            throw new IllegalStateException("Bid is already assigned to an Item");
         bids.add(bid);
+        bid.setItem(this);
     }
 }

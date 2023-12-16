@@ -6,10 +6,10 @@ import javax.persistence.Id;
 @Entity
 @org.hibernate.annotations.Immutable
 @org.hibernate.annotations.Subselect(
-        value = "select i.ID as ITEM_ID, i.NAME as NAME, " +
-                "count(b.ID) as NUMBER_OF_BIDS " +
+        value = "select i.ID as ITEMID, i.ITEM_NAME as NAME, " +
+                "count(b.ID) as NUMBEROFBIDS " +
                 "from ITEM i left outer join BID b on i.ID = b.ITEM_ID " +
-                "group by i.ID, i.NAME"
+                "group by i.ID, i.ITEM_NAME"
 )
 @org.hibernate.annotations.Synchronize({"ITEM", "BID"})
 public class ItemBidSummary {
