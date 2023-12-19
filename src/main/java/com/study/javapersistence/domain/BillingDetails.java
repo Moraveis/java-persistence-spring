@@ -9,11 +9,7 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "BD_TYPE")
-@org.hibernate.annotations.DiscriminatorFormula(
-        "case when CARDNUMBER is not null then 'CC' else 'BA' end"
-)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class BillingDetails {
 
     @Id

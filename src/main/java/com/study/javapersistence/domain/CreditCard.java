@@ -2,10 +2,11 @@ package com.study.javapersistence.domain;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@DiscriminatorValue("CC")
+@PrimaryKeyJoinColumn(name = "CREDITCARD_ID")
 public class CreditCard extends BillingDetails {
 
     @NotNull
