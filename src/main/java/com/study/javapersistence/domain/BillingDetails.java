@@ -1,5 +1,6 @@
 package com.study.javapersistence.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,7 +9,11 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name = "BD_TYPE")
+@org.hibernate.annotations.DiscriminatorFormula(
+        "case when CARDNUMBER is not null then 'CC' else 'BA' end"
+)
 public abstract class BillingDetails {
 
     @Id
@@ -16,6 +21,7 @@ public abstract class BillingDetails {
     private Long id;
 
     @NotNull
+    @Column(nullable = false)
     private String owner;
 
     public BillingDetails() {
