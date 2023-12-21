@@ -103,6 +103,10 @@ public class Item {
     })
     private MonetaryAmount buyNowPrice;
 
+    private Dimensions dimensions;
+
+    private Weight weight;
+
     /*
         Hibernate will call <code>getName()</code> and <code>setName()</code> when loading and storing items.
     */
@@ -205,5 +209,21 @@ public class Item {
 
     public void setBuyNowPrice(MonetaryAmount buyNowPrice) {
         this.buyNowPrice = buyNowPrice;
+    }
+
+    public Dimensions getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(Dimensions dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public Weight getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Weight weight) {
+        this.weight = weight;
     }
 }
