@@ -6,10 +6,13 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OrderColumn;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class Item {
@@ -22,9 +25,9 @@ public class Item {
 
     @ElementCollection
     @CollectionTable(name = "IMAGE")
-    @OrderColumn
-    @Column(name = "FILENAME")
-    private List<String> images = new ArrayList<>();
+    @MapKeyColumn(name = "FILENAME")
+    @Column(name = "IMAGENAME")
+    private Map<String, String> images = new HashMap<>();
 
     public Item() {
     }
@@ -41,11 +44,11 @@ public class Item {
         return name;
     }
 
-    public List<String> getImages() {
-        return Collections.unmodifiableList(images);
+    public Map<String, String> getImages() {
+        return Collections.unmodifiableMap(images);
     }
 
-    public void addImage(String image) {
-        this.images.add(image);
+    public void putImage(String key, String value) {
+        images.put(key, value);
     }
 }
