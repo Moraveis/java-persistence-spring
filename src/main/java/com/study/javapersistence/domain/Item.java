@@ -7,9 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Collections;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -23,8 +22,9 @@ public class Item {
     @ElementCollection
     @CollectionTable(name = "IMAGE")
     @Column(name = "FILENAME")
-    @org.hibernate.annotations.SortNatural
-    private SortedSet<String> images = new TreeSet<>();
+    // @javax.persistence.OrderBy // One possible order: "FILENAME asc"
+    @org.hibernate.annotations.OrderBy(clause = "FILENAME desc")
+    private Set<String> images = new LinkedHashSet<>();
 
     public Item() {
     }
@@ -41,11 +41,12 @@ public class Item {
         return name;
     }
 
-    public SortedSet<String> getImages() {
-        return Collections.unmodifiableSortedSet(images);
+    public Set<String> getImages() {
+        return Collections.unmodifiableSet(images);
     }
 
     public void addImage(String image) {
         images.add(image);
     }
+
 }
