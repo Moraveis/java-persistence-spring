@@ -1,9 +1,6 @@
 package com.study.javapersistence.domain;
 
-import org.hibernate.annotations.CollectionId;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OrderBy;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -11,9 +8,10 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.persistence.MapKeyColumn;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 public class Item {
@@ -26,11 +24,10 @@ public class Item {
 
     @ElementCollection
     @CollectionTable(name = "IMAGE")
-    @Column(name = "FILENAME")
-    @GenericGenerator(name = "sequence_gen", strategy = "sequence")
-    @CollectionId(column = @Column(name = "IMAGE_ID"), type = @Type(type = "long"), generator = "sequence_gen")
+    @MapKeyColumn(name = "FILENAME")
+    @Column(name = "IMAGENAME")
     @OrderBy(clause = "FILENAME DESC")
-    private Collection<String> images = new ArrayList<>();
+    private Map<String, String> images = new LinkedHashMap<>();
 
     public Item() {
     }
@@ -47,12 +44,12 @@ public class Item {
         return name;
     }
 
-    public Collection<String> getImages() {
-        return Collections.unmodifiableCollection(images);
+    public Map<String, String> getImages() {
+        return Collections.unmodifiableMap(images);
     }
 
-    public void addImage(String image) {
-        images.add(image);
+    public void putImage(String key, String value) {
+        images.put(key, value);
     }
 
 }
