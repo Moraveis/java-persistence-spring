@@ -7,12 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.OrderColumn;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 @Entity
 public class Item {
@@ -27,7 +25,8 @@ public class Item {
     @CollectionTable(name = "IMAGE")
     @MapKeyColumn(name = "FILENAME")
     @Column(name = "IMAGENAME")
-    private Map<String, String> images = new HashMap<>();
+    @org.hibernate.annotations.SortComparator(ReverseStringComparator.class)
+    private SortedMap<String, String> images = new TreeMap<>();
 
     public Item() {
     }
