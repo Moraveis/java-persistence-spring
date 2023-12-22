@@ -6,11 +6,10 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MapKeyColumn;
 import java.util.Collections;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 public class Item {
@@ -23,10 +22,9 @@ public class Item {
 
     @ElementCollection
     @CollectionTable(name = "IMAGE")
-    @MapKeyColumn(name = "FILENAME")
-    @Column(name = "IMAGENAME")
-    @org.hibernate.annotations.SortComparator(ReverseStringComparator.class)
-    private SortedMap<String, String> images = new TreeMap<>();
+    @Column(name = "FILENAME")
+    @org.hibernate.annotations.SortNatural
+    private SortedSet<String> images = new TreeSet<>();
 
     public Item() {
     }
@@ -43,11 +41,11 @@ public class Item {
         return name;
     }
 
-    public Map<String, String> getImages() {
-        return Collections.unmodifiableMap(images);
+    public SortedSet<String> getImages() {
+        return Collections.unmodifiableSortedSet(images);
     }
 
-    public void putImage(String key, String value) {
-        images.put(key, value);
+    public void addImage(String image) {
+        images.add(image);
     }
 }
