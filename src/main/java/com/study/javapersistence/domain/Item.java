@@ -1,14 +1,19 @@
 package com.study.javapersistence.domain;
 
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OrderBy;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 public class Item {
@@ -22,9 +27,10 @@ public class Item {
     @ElementCollection
     @CollectionTable(name = "IMAGE")
     @Column(name = "FILENAME")
-    // @javax.persistence.OrderBy // One possible order: "FILENAME asc"
-    @org.hibernate.annotations.OrderBy(clause = "FILENAME desc")
-    private Set<String> images = new LinkedHashSet<>();
+    @GenericGenerator(name = "sequence_gen", strategy = "sequence")
+    @CollectionId(column = @Column(name = "IMAGE_ID"), type = @Type(type = "long"), generator = "sequence_gen")
+    @OrderBy(clause = "FILENAME DESC")
+    private Collection<String> images = new ArrayList<>();
 
     public Item() {
     }
@@ -41,8 +47,8 @@ public class Item {
         return name;
     }
 
-    public Set<String> getImages() {
-        return Collections.unmodifiableSet(images);
+    public Collection<String> getImages() {
+        return Collections.unmodifiableCollection(images);
     }
 
     public void addImage(String image) {
