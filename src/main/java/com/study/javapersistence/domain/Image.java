@@ -9,22 +9,32 @@ import java.util.Objects;
 @Embeddable
 public class Image {
 
+    @Column(nullable = true) // Can be null if we have surrogate PK!
+    private String title;
+
     @Column(nullable = false)
     private String fileName;
 
     private int width;
+
     private int height;
 
-    @Parent
-    private Item item;
+    public Image() {
+    }
 
-    public Image(String fileName, int width, int height) {
+    public Image(String title, String fileName, int width, int height) {
+        this.title = title;
         this.fileName = fileName;
         this.width = width;
         this.height = height;
     }
 
-    public Image() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getFileName() {
@@ -51,24 +61,16 @@ public class Image {
         this.height = height;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return width == image.width && height == image.height && Objects.equals(fileName, image.fileName) && Objects.equals(item, image.item);
+        return width == image.width && height == image.height && Objects.equals(title, image.title) && Objects.equals(fileName, image.fileName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fileName, width, height, item);
+        return Objects.hash(title, fileName, width, height);
     }
 }

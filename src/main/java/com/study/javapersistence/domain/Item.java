@@ -1,15 +1,18 @@
 package com.study.javapersistence.domain;
 
-import javax.persistence.AttributeOverride;
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Item {
@@ -22,8 +25,9 @@ public class Item {
 
     @ElementCollection
     @CollectionTable(name = "IMAGE")
-    @AttributeOverride(name = "filename", column = @Column(name = "FNAME", nullable = false))
-    private Set<Image> images = new HashSet<>();
+    @GenericGenerator(name = "sequence_gen", strategy = "sequence")
+    @CollectionId(column = @Column(name = "IMAGE_ID"), type = @Type(type = "long"), generator = "sequence_gen")
+    private Collection<Image> images = new ArrayList<>();
 
     public Item() {
     }
@@ -40,8 +44,8 @@ public class Item {
         return name;
     }
 
-    public Set<Image> getImages() {
-        return Collections.unmodifiableSet(images);
+    public Collection<Image> getImages() {
+        return Collections.unmodifiableCollection(images);
     }
 
     public void addImage(Image image) {
