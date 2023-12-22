@@ -37,11 +37,11 @@ public class Item {
         return name;
     }
 
-    public Map<String, Image> getImages() {
+    public Map<FileName, Image> getImages() {
         return Collections.unmodifiableMap(images);
     }
 
-    public void putImage(String key, Image value) {
+    public void putImage(FileName key, Image value) {
         images.put(key, value);
     }
 
