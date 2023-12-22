@@ -1,7 +1,5 @@
 package com.study.javapersistence.domain;
 
-import org.hibernate.annotations.Parent;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;

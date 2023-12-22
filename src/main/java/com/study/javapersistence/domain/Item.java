@@ -10,9 +10,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MapKeyColumn;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class Item {
@@ -25,9 +28,8 @@ public class Item {
 
     @ElementCollection
     @CollectionTable(name = "IMAGE")
-    @GenericGenerator(name = "sequence_gen", strategy = "sequence")
-    @CollectionId(column = @Column(name = "IMAGE_ID"), type = @Type(type = "long"), generator = "sequence_gen")
-    private Collection<Image> images = new ArrayList<>();
+    @MapKeyColumn(name = "TITLE")
+    private Map<String, Image> images = new HashMap<>();
 
     public Item() {
     }
@@ -44,12 +46,12 @@ public class Item {
         return name;
     }
 
-    public Collection<Image> getImages() {
-        return Collections.unmodifiableCollection(images);
+    public Map<String, Image> getImages() {
+        return Collections.unmodifiableMap(images);
     }
 
-    public void addImage(Image image) {
-        images.add(image);
+    public void putImage(String key, Image value) {
+        images.put(key, value);
     }
 
 }
