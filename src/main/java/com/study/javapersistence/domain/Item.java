@@ -1,15 +1,18 @@
 package com.study.javapersistence.domain;
 
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Item {
@@ -21,9 +24,11 @@ public class Item {
     private String name;
 
     @ElementCollection
-    @CollectionTable(name = "IMAGE", joinColumns = @JoinColumn(name = "ITEM_ID"))
+    @CollectionTable(name = "IMAGE")
     @Column(name = "FILENAME")
-    private Set<String> images = new HashSet<>();
+    @GenericGenerator(name = "sequence_gen", strategy = "sequence")
+    @CollectionId(column = @Column(name = "IMAGE_ID"), type = @Type(type = "long"), generator = "sequence_gen")
+    private Collection<String> images = new ArrayList<>();
 
     public Item() {
     }
@@ -40,8 +45,8 @@ public class Item {
         return name;
     }
 
-    public Set<String> getImages() {
-        return Collections.unmodifiableSet(images);
+    public Collection<String> getImages() {
+        return Collections.unmodifiableCollection(images);
     }
 
     public void addImage(String image) {
