@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -16,9 +15,11 @@ public class Bid {
     @GeneratedValue(generator = "ID_GENERATOR")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Defaults to EAGER
-    @JoinColumn(name = "ITEM_ID", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Item item;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private User bidder;
 
     @NotNull
     private BigDecimal amount;
@@ -37,6 +38,14 @@ public class Bid {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public User getBidder() {
+        return bidder;
+    }
+
+    public void setBidder(User bidder) {
+        this.bidder = bidder;
     }
 
     public BigDecimal getAmount() {
