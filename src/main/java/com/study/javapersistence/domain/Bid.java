@@ -18,9 +18,6 @@ public class Bid {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Item item;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User bidder;
-
     @NotNull
     private BigDecimal amount;
 
@@ -38,14 +35,6 @@ public class Bid {
 
     public void setItem(Item item) {
         this.item = item;
-    }
-
-    public User getBidder() {
-        return bidder;
-    }
-
-    public void setBidder(User bidder) {
-        this.bidder = bidder;
     }
 
     public BigDecimal getAmount() {

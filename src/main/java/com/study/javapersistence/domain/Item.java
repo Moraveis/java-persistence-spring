@@ -1,8 +1,10 @@
 package com.study.javapersistence.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -19,10 +21,9 @@ public class Item {
 
     private String name;
 
-    @OneToMany(mappedBy = "item", // Required for bidirectional association
-            fetch = FetchType.LAZY, // The default
-            cascade = {CascadeType.PERSIST},
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "item",
+            cascade = {CascadeType.PERSIST})
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Bid> bids = new HashSet<>();
 
     public Item() {
