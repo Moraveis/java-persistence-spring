@@ -21,7 +21,8 @@ public class Item {
 
     @OneToMany(mappedBy = "item", // Required for bidirectional association
             fetch = FetchType.LAZY, // The default
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+            cascade = {CascadeType.PERSIST},
+            orphanRemoval = true)
     private Set<Bid> bids = new HashSet<>();
 
     public Item() {
@@ -49,5 +50,9 @@ public class Item {
 
     public void addBid(Bid bid) {
         bids.add(bid);
+    }
+
+    public void removeBid(Bid bid) {
+        bids.remove(bid);
     }
 }
