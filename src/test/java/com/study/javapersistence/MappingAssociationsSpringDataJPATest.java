@@ -44,5 +44,21 @@ public class MappingAssociationsSpringDataJPATest {
                 () -> assertEquals(2, bids.size())
         );
 
+        Item retrievedItem = itemRepository.findById(item.getId()).get();
+
+        for (Bid someBid : bidRepository.findByItem(retrievedItem)) {
+            bidRepository.delete(someBid);
+        }
+
+        itemRepository.delete(retrievedItem);
+
+        List<Item> items2 = itemRepository.findAll();
+        Set<Bid> bids2 = bidRepository.findByItem(item);
+
+        assertAll(
+                () -> assertEquals(1, items2.size()),
+                () -> assertEquals(2, bids2.size())
+        );
+
     }
 }
