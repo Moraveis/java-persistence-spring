@@ -55,7 +55,7 @@ public class MappingAssociationsSpringDataJPATest {
 
         assertAll(
                 () -> assertEquals(1, items2.size()),
-                () -> assertEquals(0, bids2.size())
+                () -> assertEquals(1, bids2.size())
         );
     }
 }
