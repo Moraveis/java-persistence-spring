@@ -1,8 +1,13 @@
 package com.study.javapersistence.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -12,6 +17,17 @@ public class Item {
     private Long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "item", // Required for bidirectional association
+            fetch = FetchType.LAZY) // The default
+    private Set<Bid> bids = new HashSet<>();
+
+    public Item() {
+    }
+
+    public Item(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -23,5 +39,13 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Bid> getBids() {
+        return Collections.unmodifiableSet(bids);
+    }
+
+    public void addBid(Bid bid) {
+        bids.add(bid);
     }
 }
