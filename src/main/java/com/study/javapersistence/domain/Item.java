@@ -1,10 +1,12 @@
 package com.study.javapersistence.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.swing.text.html.HTML;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +21,8 @@ public class Item {
     private String name;
 
     @OneToMany(mappedBy = "item", // Required for bidirectional association
-            fetch = FetchType.LAZY) // The default
+            fetch = FetchType.LAZY, // The default
+            cascade = CascadeType.PERSIST)
     private Set<Bid> bids = new HashSet<>();
 
     public Item() {

@@ -27,14 +27,14 @@ public class MappingAssociationsSpringDataJPATest {
     void storeLoadEntities() {
 
         Item item = new Item("Foo");
+
         Bid bid = new Bid(BigDecimal.valueOf(100), item);
         Bid bid2 = new Bid(BigDecimal.valueOf(200), item);
 
-        itemRepository.save(item);
         item.addBid(bid);
         item.addBid(bid2);
-        bidRepository.save(bid);
-        bidRepository.save(bid2);
+
+        itemRepository.save(item);
 
         List<Item> items = itemRepository.findAll();
         Set<Bid> bids = bidRepository.findByItem(item);
