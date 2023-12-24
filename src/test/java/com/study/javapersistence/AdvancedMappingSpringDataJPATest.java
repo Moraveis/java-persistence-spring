@@ -1,17 +1,21 @@
 package com.study.javapersistence;
 
+import com.study.javapersistence.configurations.SpringDataConfiguration;
 import com.study.javapersistence.domain.Address;
 import com.study.javapersistence.domain.User;
 import com.study.javapersistence.repositories.AddressRepository;
 import com.study.javapersistence.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@ExtendWith(value = SpringExtension.class)
+@ContextConfiguration(classes = {SpringDataConfiguration.class})
 public class AdvancedMappingSpringDataJPATest {
 
     @Autowired
@@ -23,7 +27,7 @@ public class AdvancedMappingSpringDataJPATest {
     @Test
     public void storeLoadEntities() {
         User john = new User("John Smith");
-        Address address = new Address(john, "Boston", "Flowers Street", "012345");
+        Address address = new Address("Boston", "Flowers Street", "012345");
 
         john.setShippingAddress(address);
 
