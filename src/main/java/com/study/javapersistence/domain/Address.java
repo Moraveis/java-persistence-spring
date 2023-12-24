@@ -1,15 +1,24 @@
 package com.study.javapersistence.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
 @Entity
 public class Address {
 
     @Id
-    @GeneratedValue(generator = "ID_GENERATOR")
+    @GeneratedValue(generator = "addressKeyGenerator")
+    @GenericGenerator(
+            name = "addressKeyGenerator",
+            strategy = "foreign",
+            parameters = @Parameter(name = "property", value = "user"))
     private Long id;
 
     @NotNull
@@ -21,10 +30,19 @@ public class Address {
     @NotNull
     private String zipCode;
 
+    @OneToOne(optional = false)
+    @PrimaryKeyJoinColumn
+    private User user;
+
     public Address() {
     }
 
-    public Address(String city, String street, String zipCode) {
+    public Address(User user) {
+        this.user = user;
+    }
+
+    public Address(User user, String city, String street, String zipCode) {
+        this.user = user;
         this.city = city;
         this.street = street;
         this.zipCode = zipCode;

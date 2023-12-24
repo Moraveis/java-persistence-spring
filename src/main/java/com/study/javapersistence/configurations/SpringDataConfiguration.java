@@ -15,7 +15,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@EnableTransactionManagement
 @EnableJpaRepositories("com.study.javapersistence.repositories")
 public class SpringDataConfiguration {
 
