@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -15,8 +16,12 @@ public class Bid {
     @GeneratedValue(generator = "ID_GENERATOR")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
+    @ManyToOne
+    @JoinColumn(
+            name = "ITEM_ID",
+            updatable = false, insertable = false // Disable writing!
+    )
+    @NotNull // For schema generation
     private Item item;
 
     @NotNull

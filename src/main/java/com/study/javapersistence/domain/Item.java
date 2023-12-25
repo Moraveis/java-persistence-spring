@@ -3,10 +3,13 @@ package com.study.javapersistence.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class Item {
@@ -15,10 +18,19 @@ public class Item {
     @GeneratedValue(generator = "ID_GENERATOR")
     private Long id;
 
+    @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "item")
-    private Collection<Bid> bids = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(
+            name = "ITEM_ID",
+            nullable = false
+    )
+    @OrderColumn(
+            name = "BID_POSITION", // Defaults to BIDS_ORDER
+            nullable = false
+    )
+    private List<Bid> bids = new ArrayList<>();
 
     public Item() {
     }
@@ -39,8 +51,8 @@ public class Item {
         this.name = name;
     }
 
-    public Collection<Bid> getBids() {
-        return Collections.unmodifiableCollection(bids);
+    public List<Bid> getBids() {
+        return Collections.unmodifiableList(bids);
     }
 
     public void addBid(Bid bid) {
