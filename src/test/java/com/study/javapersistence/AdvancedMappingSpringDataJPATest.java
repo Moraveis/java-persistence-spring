@@ -1,48 +1,51 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.configurations.SpringDataConfiguration;
-import com.study.javapersistence.domain.Address;
-import com.study.javapersistence.domain.User;
-import com.study.javapersistence.repositories.AddressRepository;
-import com.study.javapersistence.repositories.UserRepository;
+import com.study.javapersistence.domain.Item;
+import com.study.javapersistence.domain.Shipment;
+import com.study.javapersistence.repositories.ItemRepository;
+import com.study.javapersistence.repositories.ShipmentRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-@ExtendWith(value = SpringExtension.class)
-@ContextConfiguration(classes = {SpringDataConfiguration.class})
+@SpringBootTest
 public class AdvancedMappingSpringDataJPATest {
 
     @Autowired
-    private UserRepository userRepository;
+    private ShipmentRepository shipmentRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    private ItemRepository itemRepository;
 
     @Test
-    public void storeLoadEntities() {
-        User john = new User("John Smith");
-        Address address = new Address("Boston", "Flowers Street", "012345");
+    void testStoreLoadEntities() {
 
-        john.setShippingAddress(address);
+        Shipment shipment = new Shipment();
+        shipment.setCreatedOn(LocalDateTime.now());
+        shipmentRepository.save(shipment);
 
-        userRepository.save(john);
+        Item item = new Item("Foo");
+        itemRepository.save(item);
 
-        User user = userRepository.findById(john.getId()).get();
-        Address address2 = addressRepository.findById(address.getId()).get();
+        Shipment auctionShipment = new Shipment(item);
+        auctionShipment.setCreatedOn(LocalDateTime.now());
+        shipmentRepository.save(auctionShipment);
 
-        assertAll(
-                () -> assertEquals("Flowers Street", user.getShippingAddress().getStreet()),
-                () -> assertEquals("012345", user.getShippingAddress().getZipCode()),
-                () -> assertEquals("Boston", user.getShippingAddress().getCity()),
-                () -> assertEquals("Flowers Street", address2.getStreet()),
-                () -> assertEquals("012345", address2.getZipCode()),
-                () -> assertEquals("Boston", address2.getCity())
+        Item item2 = itemRepository.findById(item.getId()).get();
+        Shipment shipment2 = shipmentRepository.findById(shipment.getId()).get();
+        Shipment auctionShipment2 = shipmentRepository.findShipmentWithItem(auctionShipment.getId());
+
+        Assertions.assertAll(
+                () -> assertNull(shipment2.getAuction()),
+                () -> assertEquals(item2.getId(), auctionShipment2.getAuction().getId()),
+                () -> assertEquals(item2.getName(), auctionShipment2.getAuction().getName())
         );
+
     }
 }
