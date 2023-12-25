@@ -1,51 +1,52 @@
 package com.study.javapersistence;
 
+import com.study.javapersistence.domain.Bid;
 import com.study.javapersistence.domain.Item;
-import com.study.javapersistence.domain.Shipment;
+import com.study.javapersistence.repositories.BidRepository;
 import com.study.javapersistence.repositories.ItemRepository;
-import com.study.javapersistence.repositories.ShipmentRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 public class AdvancedMappingSpringDataJPATest {
 
     @Autowired
-    private ShipmentRepository shipmentRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    private BidRepository bidRepository;
 
     @Test
     void testStoreLoadEntities() {
 
-        Shipment shipment = new Shipment();
-        shipment.setCreatedOn(LocalDateTime.now());
-        shipmentRepository.save(shipment);
-
         Item item = new Item("Foo");
         itemRepository.save(item);
 
-        Shipment auctionShipment = new Shipment(item);
-        auctionShipment.setCreatedOn(LocalDateTime.now());
-        shipmentRepository.save(auctionShipment);
+        Bid someBid = new Bid(new BigDecimal("123.00"), item);
+        item.addBid(someBid);
+        item.addBid(someBid);
+        bidRepository.save(someBid);
 
-        Item item2 = itemRepository.findById(item.getId()).get();
-        Shipment shipment2 = shipmentRepository.findById(shipment.getId()).get();
-        Shipment auctionShipment2 = shipmentRepository.findShipmentWithItem(auctionShipment.getId());
+        Item item2 = itemRepository.findItemWithBids(item.getId());
 
-        Assertions.assertAll(
-                () -> assertNull(shipment2.getAuction()),
-                () -> assertEquals(item2.getId(), auctionShipment2.getAuction().getId()),
-                () -> assertEquals(item2.getName(), auctionShipment2.getAuction().getName())
+        assertAll(
+                () -> assertEquals(2, item.getBids().size()),
+                () -> assertEquals(1, item2.getBids().size())
         );
+
+        Bid bid = new Bid(new BigDecimal("456.00"), item);
+        item.addBid(bid); // No SELECT!
+        bidRepository.save(bid);
+
+        Item item3 = itemRepository.findItemWithBids(item.getId());
+
+        assertEquals(2, item3.getBids().size());
 
     }
 }
