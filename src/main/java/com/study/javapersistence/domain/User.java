@@ -20,6 +20,8 @@ public class User {
     @NotNull
     private String username;
 
+    private Address shippingAddress;
+
     @OneToMany(mappedBy = "buyer")
     private Set<Item> boughtItems = new HashSet<>();
 
@@ -44,5 +46,13 @@ public class User {
 
     public Set<Item> getBoughtItems() {
         return boughtItems;
+    }
+
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 }
