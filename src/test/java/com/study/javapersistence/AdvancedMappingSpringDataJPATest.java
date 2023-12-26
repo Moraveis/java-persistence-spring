@@ -1,17 +1,19 @@
 package com.study.javapersistence;
 
-import com.study.javapersistence.domain.Bid;
 import com.study.javapersistence.domain.Item;
+import com.study.javapersistence.domain.User;
 import com.study.javapersistence.repositories.BidRepository;
 import com.study.javapersistence.repositories.ItemRepository;
+import com.study.javapersistence.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class AdvancedMappingSpringDataJPATest {
@@ -22,31 +24,36 @@ public class AdvancedMappingSpringDataJPATest {
     @Autowired
     private BidRepository bidRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional
     @Test
-    void testStoreLoadEntities() {
+    public void storeLoadEntities() {
 
-        Item item = new Item("Foo");
-        itemRepository.save(item);
+        Item someItem = new Item("Some Item");
+        itemRepository.save(someItem);
+        Item otherItem = new Item("Other Item");
+        itemRepository.save(otherItem);
 
-        Bid someBid = new Bid(new BigDecimal("123.00"), item);
-        item.addBid(someBid);
-        item.addBid(someBid);
-        bidRepository.save(someBid);
+        User someUser = new User("John Smith");
+        someUser.getBoughtItems().add(someItem); // Link
+        someItem.setBuyer(someUser); // Link
+        someUser.getBoughtItems().add(otherItem);
+        otherItem.setBuyer(someUser);
+        userRepository.save(someUser);
 
-        Item item2 = itemRepository.findItemWithBids(item.getId());
+        Item unsoldItem = new Item("Unsold Item");
+        itemRepository.save(unsoldItem);
+
+        Item item = itemRepository.findById(someItem.getId()).get();
+        Item item2 = itemRepository.findById(unsoldItem.getId()).get();
 
         assertAll(
-                () -> assertEquals(2, item.getBids().size()),
-                () -> assertEquals(1, item2.getBids().size())
+                () -> assertEquals("John Smith", item.getBuyer().getUsername()),
+                () -> assertTrue(item.getBuyer().getBoughtItems().contains(item)),
+                () -> assertNull(item2.getBuyer())
         );
-
-        Bid bid = new Bid(new BigDecimal("456.00"), item);
-        item.addBid(bid); // No SELECT!
-        bidRepository.save(bid);
-
-        Item item3 = itemRepository.findItemWithBids(item.getId());
-
-        assertEquals(2, item3.getBids().size());
 
     }
 }
