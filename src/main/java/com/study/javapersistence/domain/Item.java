@@ -45,9 +45,6 @@ public class Item {
     )
     private User buyer;
 
-    @OneToMany(mappedBy = "item")
-    private Set<CategorizedItem> categorizedItems = new HashSet<>();
-
     public Item() {
     }
 
@@ -81,13 +78,5 @@ public class Item {
 
     public void setBuyer(User buyer) {
         this.buyer = buyer;
-    }
-
-    public Set<CategorizedItem> getCategorizedItems() {
-        return Collections.unmodifiableSet(categorizedItems);
-    }
-
-    public void addCategorizedItem(CategorizedItem categorizedItem) {
-        categorizedItems.add(categorizedItem);
     }
 }

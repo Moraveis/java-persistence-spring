@@ -7,7 +7,6 @@ import com.study.javapersistence.domain.Item;
 import com.study.javapersistence.domain.Shipment;
 import com.study.javapersistence.domain.User;
 import com.study.javapersistence.repositories.BidRepository;
-import com.study.javapersistence.repositories.CategorizedItemRepository;
 import com.study.javapersistence.repositories.CategoryRepository;
 import com.study.javapersistence.repositories.ItemRepository;
 import com.study.javapersistence.repositories.ShipmentRepository;
@@ -16,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,9 +40,6 @@ public class AdvancedMappingSpringDataJPATest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
-    private CategorizedItemRepository categorizedItemRepository;
 
     @Transactional
     @Test
@@ -100,27 +98,32 @@ public class AdvancedMappingSpringDataJPATest {
         itemRepository.save(someItem);
         itemRepository.save(otherItem);
 
-        CategorizedItem linkOne = new CategorizedItem("John Smith", someCategory, someItem);
-        CategorizedItem linkTwo = new CategorizedItem("John Smith", someCategory, otherItem);
-        CategorizedItem linkThree = new CategorizedItem("John Smith", otherCategory, someItem);
+        User someUser = new User("John Smith");
+        userRepository.save(someUser);
 
-        categorizedItemRepository.save(linkOne);
-        categorizedItemRepository.save(linkTwo);
-        categorizedItemRepository.save(linkThree);
+        CategorizedItem linkOne = new CategorizedItem(someUser, someItem);
+        someCategory.addCategorizedItem(linkOne);
+
+        CategorizedItem linkTwo = new CategorizedItem(someUser, otherItem);
+        someCategory.addCategorizedItem(linkTwo);
+
+        CategorizedItem linkThree = new CategorizedItem(someUser, someItem);
+        otherCategory.addCategorizedItem(linkThree);
 
         Category category1 = categoryRepository.findById(someCategory.getId()).get();
         Category category2 = categoryRepository.findById(otherCategory.getId()).get();
 
         Item item1 = itemRepository.findById(someItem.getId()).get();
-        Item item2 = itemRepository.findById(otherItem.getId()).get();
+        User john = userRepository.findById(someUser.getId()).get();
+
+        List<Category> categoriesOfItem = categoryRepository.findCategoryWithCategorizedItems(item1);
 
         assertAll(
                 () -> assertEquals(2, category1.getCategorizedItems().size()),
-                () -> assertEquals(2, item1.getCategorizedItems().size()),
                 () -> assertEquals(1, category2.getCategorizedItems().size()),
-                () -> assertEquals(1, item2.getCategorizedItems().size()),
                 () -> assertEquals(item1, category2.getCategorizedItems().iterator().next().getItem()),
-                () -> assertEquals(category1, item2.getCategorizedItems().iterator().next().getCategory())
+                () -> assertEquals(john, category2.getCategorizedItems().iterator().next().getAddedBy()),
+                () -> assertEquals(2, categoriesOfItem.size())
         );
     }
 }

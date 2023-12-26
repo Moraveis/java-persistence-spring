@@ -1,106 +1,48 @@
 package com.study.javapersistence.domain;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Immutable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "CATEGORY_ITEM")
-@Immutable
+@Embeddable
 public class CategorizedItem {
-    @Embeddable
-    public static class Id implements Serializable {
-
-        @Column(name = "CATEGORY_ID")
-        private Long categoryId;
-
-        @Column(name = "ITEM_ID")
-        private Long itemId;
-
-        public Id() {
-        }
-
-        public Id(Long categoryId, Long itemId) {
-            this.categoryId = categoryId;
-            this.itemId = itemId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Id id = (Id) o;
-            return Objects.equals(categoryId, id.categoryId) &&
-                    Objects.equals(itemId, id.itemId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(categoryId, itemId);
-        }
-    }
-
-    @EmbeddedId
-    private Id id = new Id();
-
-    @Column(updatable = false)
-    @NotNull
-    private String addedBy;
-
-    @Column(updatable = false)
-    @NotNull
-    @CreationTimestamp
-    private LocalDateTime addedOn;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "CATEGORY_ID",
-            insertable = false, updatable = false)
-    private Category category;
 
     @ManyToOne
     @JoinColumn(
             name = "ITEM_ID",
-            insertable = false, updatable = false)
+            nullable = false, updatable = false
+    )
     private Item item;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "USER_ID",
+            updatable = false
+    )
+    @NotNull // Doesn't generate SQL constraint, so not part of the PK!
+    private User addedBy;
+
+    @Column(updatable = false)
+    @NotNull // Doesn't generate SQL constraint, so not part of the PK!
+    private LocalDateTime addedOn = LocalDateTime.now();
 
     public CategorizedItem() {
     }
 
-    public CategorizedItem(String addedByUsername,
-                           Category category,
-                           Item item) {
-
-        // Set fields
-        this.addedBy = addedByUsername;
-        this.category = category;
+    public CategorizedItem(User addedBy, Item item) {
+        this.addedBy = addedBy;
         this.item = item;
-
-        // Set identifier values
-        this.id.categoryId = category.getId();
-        this.id.itemId = item.getId();
-
-        // Guarantee referential integrity if made bidirectional
-        category.addCategorizedItem(this);
-        item.addCategorizedItem(this);
     }
 
-    public Id getId() {
-        return id;
+    public Item getItem() {
+        return item;
     }
 
-    public String getAddedBy() {
+    public User getAddedBy() {
         return addedBy;
     }
 
@@ -108,11 +50,27 @@ public class CategorizedItem {
         return addedOn;
     }
 
-    public Category getCategory() {
-        return category;
+    // Careful! Equality as shown here is not 'detached' safe!
+    // Don't put detached instances into a HashSet! Or, if you
+    // really have to compare detached instances, make sure they
+    // were all loaded in the same persistence context.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        // We are comparing instances by Java identity, not by primary key
+        // equality. The scope where Java identity is the same as primary
+        // key equality is the persistence context, not when instances are
+        // in detached state!
+        CategorizedItem that = (CategorizedItem) o;
+        return item.equals(that.item) &&
+                addedBy.equals(that.addedBy) &&
+                addedOn.equals(that.addedOn);
     }
 
-    public Item getItem() {
-        return item;
+    @Override
+    public int hashCode() {
+        return Objects.hash(item, addedBy, addedOn);
     }
 }
