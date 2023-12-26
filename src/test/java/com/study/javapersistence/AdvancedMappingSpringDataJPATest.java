@@ -1,11 +1,13 @@
 package com.study.javapersistence;
 
 import com.study.javapersistence.domain.Address;
+import com.study.javapersistence.domain.CategorizedItem;
 import com.study.javapersistence.domain.Category;
 import com.study.javapersistence.domain.Item;
 import com.study.javapersistence.domain.Shipment;
 import com.study.javapersistence.domain.User;
 import com.study.javapersistence.repositories.BidRepository;
+import com.study.javapersistence.repositories.CategorizedItemRepository;
 import com.study.javapersistence.repositories.CategoryRepository;
 import com.study.javapersistence.repositories.ItemRepository;
 import com.study.javapersistence.repositories.ShipmentRepository;
@@ -37,6 +39,9 @@ public class AdvancedMappingSpringDataJPATest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategorizedItemRepository categorizedItemRepository;
 
     @Transactional
     @Test
@@ -86,20 +91,22 @@ public class AdvancedMappingSpringDataJPATest {
         Category someCategory = new Category("Some Category");
         Category otherCategory = new Category("Other Category");
 
+        categoryRepository.save(someCategory);
+        categoryRepository.save(otherCategory);
+
         Item someItem = new Item("Some Item");
         Item otherItem = new Item("Other Item");
 
-        someCategory.addItem(someItem);
-        someItem.addCategory(someCategory);
+        itemRepository.save(someItem);
+        itemRepository.save(otherItem);
 
-        someCategory.addItem(otherItem);
-        otherItem.addCategory(someCategory);
+        CategorizedItem linkOne = new CategorizedItem("John Smith", someCategory, someItem);
+        CategorizedItem linkTwo = new CategorizedItem("John Smith", someCategory, otherItem);
+        CategorizedItem linkThree = new CategorizedItem("John Smith", otherCategory, someItem);
 
-        otherCategory.addItem(someItem);
-        someItem.addCategory(otherCategory);
-
-        categoryRepository.save(someCategory);
-        categoryRepository.save(otherCategory);
+        categorizedItemRepository.save(linkOne);
+        categorizedItemRepository.save(linkTwo);
+        categorizedItemRepository.save(linkThree);
 
         Category category1 = categoryRepository.findById(someCategory.getId()).get();
         Category category2 = categoryRepository.findById(otherCategory.getId()).get();
@@ -108,12 +115,12 @@ public class AdvancedMappingSpringDataJPATest {
         Item item2 = itemRepository.findById(otherItem.getId()).get();
 
         assertAll(
-                () -> assertEquals(2, category1.getItems().size()),
-                () -> assertEquals(2, item1.getCategories().size()),
-                () -> assertEquals(1, category2.getItems().size()),
-                () -> assertEquals(1, item2.getCategories().size()),
-                () -> assertEquals(item1, category2.getItems().iterator().next()),
-                () -> assertEquals(category1, item2.getCategories().iterator().next())
+                () -> assertEquals(2, category1.getCategorizedItems().size()),
+                () -> assertEquals(2, item1.getCategorizedItems().size()),
+                () -> assertEquals(1, category2.getCategorizedItems().size()),
+                () -> assertEquals(1, item2.getCategorizedItems().size()),
+                () -> assertEquals(item1, category2.getCategorizedItems().iterator().next().getItem()),
+                () -> assertEquals(category1, item2.getCategorizedItems().iterator().next().getCategory())
         );
     }
 }

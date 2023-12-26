@@ -1,12 +1,9 @@
 package com.study.javapersistence.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,13 +17,8 @@ public class Category {
 
     private String name;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "CATEGORY_ITEM",
-            joinColumns = @JoinColumn(name = "CATEGORY_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ITEM_ID")
-    )
-    private Set<Item> items = new HashSet<>();
+    @OneToMany(mappedBy = "category")
+    private Set<CategorizedItem> categorizedItems = new HashSet<>();
 
     public Category() {
     }
@@ -43,11 +35,15 @@ public class Category {
         return name;
     }
 
-    public Set<Item> getItems() {
-        return Collections.unmodifiableSet(items);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addItem(Item item) {
-        items.add(item);
+    public Set<CategorizedItem> getCategorizedItems() {
+        return Collections.unmodifiableSet(categorizedItems);
+    }
+
+    public void addCategorizedItem(CategorizedItem categorizedItem) {
+        categorizedItems.add(categorizedItem);
     }
 }

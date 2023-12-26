@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -46,8 +45,8 @@ public class Item {
     )
     private User buyer;
 
-    @ManyToMany(mappedBy = "items")
-    private Set<Category> categories = new HashSet<>();
+    @OneToMany(mappedBy = "item")
+    private Set<CategorizedItem> categorizedItems = new HashSet<>();
 
     public Item() {
     }
@@ -84,11 +83,11 @@ public class Item {
         this.buyer = buyer;
     }
 
-    public Set<Category> getCategories() {
-        return Collections.unmodifiableSet(categories);
+    public Set<CategorizedItem> getCategorizedItems() {
+        return Collections.unmodifiableSet(categorizedItems);
     }
 
-    public void addCategory(Category category) {
-        categories.add(category);
+    public void addCategorizedItem(CategorizedItem categorizedItem) {
+        categorizedItems.add(categorizedItem);
     }
 }
