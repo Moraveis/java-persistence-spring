@@ -6,13 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -42,6 +45,9 @@ public class Item {
             inverseJoinColumns = @JoinColumn(nullable = false)
     )
     private User buyer;
+
+    @ManyToMany(mappedBy = "items")
+    private Set<Category> categories = new HashSet<>();
 
     public Item() {
     }
@@ -76,5 +82,13 @@ public class Item {
 
     public void setBuyer(User buyer) {
         this.buyer = buyer;
+    }
+
+    public Set<Category> getCategories() {
+        return Collections.unmodifiableSet(categories);
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
     }
 }
