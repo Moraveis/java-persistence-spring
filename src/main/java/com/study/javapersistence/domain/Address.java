@@ -3,6 +3,7 @@ package com.study.javapersistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -25,7 +26,11 @@ public class Address {
     private String city;
 
     @OneToMany
-    @JoinColumn(name = "DELIVERY_ADDRESS_USER_ID", nullable = false)
+    @JoinTable(
+            name = "DELIVERIES",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SHIPMENT_ID")
+    )
     private Set<Shipment> deliveries = new HashSet<>();
 
     public Address() {
